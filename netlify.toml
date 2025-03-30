@@ -1,4 +1,5 @@
 [functions]
+  directory = "functions"
   external_node_modules = ["express", "mongoose", "dotenv", "qrcode"]
   node_bundler = "esbuild"
 [[redirects]]
