@@ -27,6 +27,7 @@ app.get("/api/qrcode", async (req, res) => {
     res.send(qrCodeImage);
   } catch (error) {
     console.error("Failed to generate QR", error);
+    res.send({ message: "Failed to generate QR!", error });
   }
 });
 
