@@ -21,7 +21,12 @@ img {
   object-fit: contain;
 }
 .text_qrcode {
-  margin: 20px;
+  margin-top: 20px;
+}
+.text_to_generate_qr {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 .empty_text {
   font-size: xx-large;
