@@ -17,12 +17,11 @@ app.get("/api/qrcode", async (req, res) => {
       return res.send({ message: "Text is required!" });
     }
 
-    const qrCodeImage = await qrcode.toBuffer(req.query.text, {
+    const imageUrl = await qrcode.toDataURL(req.query.text, {
       scale: 15,
     });
 
-    res.setHeader("Content-Type", "image/png");
-    res.send(qrCodeImage);
+    res.send({ imageUrl });
   } catch (error) {
     console.error("Failed to generate QR", error);
     res.send({ message: "Failed to generate QR!", error });
