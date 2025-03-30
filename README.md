@@ -2,24 +2,41 @@
 
 Use this template to create a react app with backend to be deployed to Netlify.
 
-# Manual Steps
+## How to use
+
+1. Clone this repo using git or use "Download Zip" option in Github
+2. Open the folder in VS Code
+3. Install dependencies
+
+```sh
+npm install
+```
+
+4. Add `.env` file with `MONGO_URI` if you are using mongodb
+5. Run the vite server
+
+```sh
+npm run dev
+```
+
+## Manual Steps
 
 1. Create react project using vite
 
-```
+```sh
 npm create vite -- -t react netlify-template
 ```
 
 2. Open newly created folder in VS Code
 3. Install dependencies
 
-```
+```sh
 npm install
 ```
 
 4. Install dependencies for backend with netlify related packages
 
-```
+```sh
 npm install express mongoose dotenv serverless-http
 ```
 
