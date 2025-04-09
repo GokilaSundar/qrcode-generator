@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 
-export const QRCodeGenerator = () => {
+export const QRCodeGenerator = ({ user, setUser }) => {
   const [text, setText] = useState("");
   const [imageUrl, setImageUrl] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -24,6 +24,17 @@ export const QRCodeGenerator = () => {
 
   return (
     <div className="container">
+      <div className="header">
+        <h3>Welcome {user.name}</h3>
+        <button
+          className="logout_button"
+          onClick={() => {
+            setUser(null);
+          }}
+        >
+          Logout
+        </button>
+      </div>
       <div className="text_to_generate_qr">
         <textarea
           type="text"
