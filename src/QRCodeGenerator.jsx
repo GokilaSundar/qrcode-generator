@@ -11,7 +11,12 @@ export const QRCodeGenerator = ({ user, setUser }) => {
 
     try {
       const response = await axios.get(
-        `/api/qrcode?text=${encodeURIComponent(text)}`
+        `/api/qrcode?text=${encodeURIComponent(text)}`,
+        {
+          headers: {
+            Authorization: "Bearer " + user.token,
+          },
+        }
       );
 
       setImageUrl(response.data.imageUrl);
