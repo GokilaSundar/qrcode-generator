@@ -92,6 +92,29 @@ app.post("/api/login", async (req, res) => {
   }
 });
 
+app.use("/api", async (req, res, next) => {
+  const token = req.headers["authorization"]?.split(" ")[1];
+
+  if (!token) {
+    return res.status(400).send({ message: "Token is required!" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    if (!decoded) {
+      return res.status(400).send({ message: "Invalid token!" });
+    }
+
+    req.userId = decoded.userId;
+
+    next();
+  } catch (error) {
+    console.error("Failed to verify token", error);
+    return res.status(400).send({ message: "Invalid token!", error });
+  }
+});
+
 app.get("/api/qrcode", async (req, res) => {
   try {
     if (!req.query.text) {
