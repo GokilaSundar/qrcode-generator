@@ -1,7 +1,11 @@
 import "./database.js";
 
+import bcrypt from "bcrypt";
 import express from "express";
+import jwt from "jsonwebtoken";
 import qrcode from "qrcode";
+
+import { UserModel } from "./models";
 
 export const app = express();
 
@@ -9,6 +13,83 @@ app.use(express.json());
 
 app.get("/api/hello", (req, res) => {
   res.send({ message: "Hello World!" });
+});
+
+app.post("/api/register", async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+
+    if (!name) {
+      return res.status(400).send({ message: "Name is required!" });
+    }
+
+    if (!email) {
+      return res.status(400).send({ message: "Email is required!" });
+    }
+
+    if (!password) {
+      return res.status(400).send({ message: "Password is required!" });
+    }
+
+    const existingUser = await UserModel.findOne({ email });
+
+    if (existingUser) {
+      return res.status(400).send({ message: "User already exists!" });
+    }
+
+    await UserModel.create({
+      name,
+      email,
+      password: bcrypt.hashSync(password, 10),
+    });
+
+    res.send({ message: "User registered successfully!" });
+  } catch (error) {
+    console.error("Failed to register user", error);
+    res.status(500).send({ message: "Failed to register user!", error });
+  }
+});
+
+app.post("/api/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email) {
+      return res.status(400).send({ message: "Email is required!" });
+    }
+
+    if (!password) {
+      return res.status(400).send({ message: "Password is required!" });
+    }
+
+    const user = await UserModel.findOne({ email });
+
+    if (!user) {
+      return res.status(400).send({ message: "User not found!" });
+    }
+
+    const isPasswordValid = bcrypt.compareSync(password, user.password);
+
+    if (!isPasswordValid) {
+      return res.status(400).send({ message: "Invalid password!" });
+    }
+
+    const token = jwt.sign(
+      {
+        userId: user._id.toString(),
+      },
+      process.env.JWT_SECRET
+    );
+
+    res.send({
+      name: user.name,
+      email: user.email,
+      token,
+    });
+  } catch (error) {
+    console.error("Failed to login user", error);
+    res.status(500).send({ message: "Failed to login user!", error });
+  }
 });
 
 app.get("/api/qrcode", async (req, res) => {
