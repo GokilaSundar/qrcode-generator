@@ -1,8 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
-import { app } from "./functions/app.js";
-
 const proxy = {
   "/api": {},
 };
@@ -10,13 +8,19 @@ const proxy = {
 function expressPlugin() {
   return {
     name: "express-plugin",
-    config() {
+    config(_, { mode }) {
+      if (mode === "production") {
+        return {};
+      }
+
       return {
         server: { proxy },
         preview: { proxy },
       };
     },
-    configureServer(server) {
+    async configureServer(server) {
+      const { app } = await import("./functions/app.js");
+
       server.middlewares.use(app);
     },
   };
